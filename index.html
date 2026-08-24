@@ -10,11 +10,12 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="The Power Gap">
   <meta property="og:description" content="Where data-centre ambition meets the electricity grid. Early project prototype.">
-  <meta property="og:image" content="og.png">
+  <meta property="og:url" content="https://kladeisen.github.io/the-power-gap-showcase/">
+  <meta property="og:image" content="https://kladeisen.github.io/the-power-gap-showcase/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Power Gap">
   <meta name="twitter:description" content="Where data-centre ambition meets the electricity grid. Early project prototype.">
-  <meta name="twitter:image" content="og.png">
+  <meta name="twitter:image" content="https://kladeisen.github.io/the-power-gap-showcase/og.png">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +98,7 @@
     h2 { font-size: clamp(1.7rem, 7vw, 2.5rem); margin: 0 0 0.85rem; text-wrap: balance; }
     h3 { font-size: 1.2rem; margin: 0 0 0.4rem; }
 
-    p { margin: 0 0 1rem; color: var(--ink); }
+    p { margin: 0 0 1rem; color: var(--ink); overflow-wrap: break-word; }
     .lede { font-size: 1.22rem; color: var(--ice-2); }
     .muted { color: var(--muted); }
 
@@ -359,6 +360,12 @@
       .hero { justify-content: center; padding-top: 4rem; }
       .status-row { flex-direction: row; flex-wrap: wrap; align-items: center; }
       .chip { width: auto; }
+    }
+
+    @media (max-width: 430px) {
+      body { font-size: 1rem; }
+      .lede { font-size: 1.08rem; }
+      h1 { font-size: 2.35rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
