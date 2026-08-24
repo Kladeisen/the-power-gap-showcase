@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Power Gap</title>
+  <meta name="description" content="Where data-centre ambition meets the electricity grid. Early project prototype.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#061018">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Power Gap">
+  <meta property="og:description" content="Where data-centre ambition meets the electricity grid. Early project prototype.">
+  <meta property="og:image" content="og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Power Gap">
+  <meta name="twitter:description" content="Where data-centre ambition meets the electricity grid. Early project prototype.">
+  <meta name="twitter:image" content="og.png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:opsz,wght@6..72,400;6..72,560;6..72,650&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #e8f1f8;
+      --muted: #93a8ba;
+      --faint: #6d8296;
+      --line: rgba(143, 212, 255, 0.16);
+      --line-strong: rgba(143, 212, 255, 0.34);
+      --bg: #061018;
+      --bg-2: #0a1824;
+      --panel: #0d1d2b;
+      --ice: #9ad8ff;
+      --ice-2: #d7eefc;
+      --amber: #e4b56a;
+      --green: #86d4a6;
+      --danger: #f0a3a3;
+      --max: 42rem;
+      --pad: clamp(1.25rem, 5vw, 2rem);
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--ice); }
+    a:hover { color: var(--ice-2); }
+    :focus-visible {
+      outline: 2px solid var(--ice);
+      outline-offset: 3px;
+    }
+
+    .skip {
+      position: absolute;
+      left: 0.75rem;
+      top: 0.75rem;
+      z-index: 20;
+      padding: 0.7rem 1rem;
+      min-height: 44px;
+      background: var(--panel);
+      color: var(--ice-2);
+      text-decoration: none;
+      transform: translateY(-160%);
+    }
+    .skip:focus { transform: none; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 2 * var(--pad)));
+      max-width: 100%;
+      margin-inline: auto;
+    }
+
+    .kicker {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin: 0 0 0.75rem;
+    }
+
+    h1, h2, h3 {
+      font-family: "Newsreader", "Iowan Old Style", Georgia, serif;
+      font-weight: 560;
+      letter-spacing: -0.02em;
+      line-height: 1.08;
+    }
+    h1 { font-size: clamp(2.6rem, 12vw, 5.2rem); margin: 0 0 0.85rem; max-width: 100%; }
+    h2 { font-size: clamp(1.7rem, 7vw, 2.5rem); margin: 0 0 0.85rem; text-wrap: balance; }
+    h3 { font-size: 1.2rem; margin: 0 0 0.4rem; }
+
+    p { margin: 0 0 1rem; color: var(--ink); }
+    .lede { font-size: 1.22rem; color: var(--ice-2); }
+    .muted { color: var(--muted); }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow-x: clip;
+      overflow-y: visible;
+      padding: 5.5rem 0 2.4rem;
+      isolation: isolate;
+    }
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background:
+        radial-gradient(120% 70% at 80% -10%, rgba(154, 216, 255, 0.16), transparent 55%),
+        radial-gradient(90% 50% at 0% 100%, rgba(228, 181, 106, 0.08), transparent 45%),
+        linear-gradient(180deg, #07131c 0%, var(--bg) 72%);
+    }
+    .grid-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(80% 70% at 70% 20%, #000 20%, transparent 78%);
+    }
+    .pulse {
+      position: absolute;
+      left: 0;
+      top: 28%;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ice), transparent);
+      opacity: 0.55;
+      animation: sweep 7.5s linear infinite;
+      z-index: -1;
+    }
+    .pulse-2 {
+      top: 46%;
+      animation-duration: 11s;
+      opacity: 0.28;
+    }
+    @keyframes sweep {
+      from { transform: translateX(-12%); }
+      to { transform: translateX(12%); }
+    }
+
+    .status-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.6rem;
+      margin: 1.35rem 0 1.6rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--ice-2);
+      background: rgba(13, 29, 43, 0.72);
+      width: 100%;
+    }
+    .chip.live::before,
+    .chip.proto::before {
+      content: "";
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      margin-right: 0.55rem;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(134, 212, 166, 0.16);
+    }
+    .chip.proto::before { background: var(--amber); box-shadow: 0 0 0 4px rgba(228, 181, 106, 0.14); }
+
+    .scroll-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-height: 44px;
+      margin-top: 1.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+    .scroll-hint span {
+      width: 1px;
+      height: 1.8rem;
+      background: var(--ice);
+      animation: drip 1.8s ease-in-out infinite;
+    }
+    @keyframes drip {
+      0%, 100% { transform: scaleY(0.45); opacity: 0.4; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    section {
+      padding: 4.2rem 0 0.4rem;
+    }
+    section.tight { padding-top: 2.4rem; }
+
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, var(--line-strong), transparent 85%);
+      margin-bottom: 1.6rem;
+    }
+
+    .split {
+      display: grid;
+      gap: 1rem;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 1.15rem 1.15rem 1rem;
+    }
+    .panel.not {
+      border-color: rgba(240, 163, 163, 0.28);
+    }
+    .panel.yes {
+      border-color: rgba(154, 216, 255, 0.32);
+    }
+    .panel .label {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 0.45rem;
+    }
+
+    .spine {
+      display: grid;
+      gap: 0;
+      margin-top: 1.4rem;
+      border-left: 1px solid var(--line-strong);
+    }
+    .layer {
+      padding: 0.95rem 0 0.95rem 1.1rem;
+      position: relative;
+    }
+    .layer::before {
+      content: "";
+      position: absolute;
+      left: -0.29rem;
+      top: 1.25rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--ice);
+    }
+    .layer .idx {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      color: var(--ice);
+      letter-spacing: 0.08em;
+    }
+
+    .disclaimer {
+      margin-top: 1.4rem;
+      padding: 1rem 1.05rem;
+      border: 1px solid rgba(228, 181, 106, 0.38);
+      background: rgba(228, 181, 106, 0.06);
+      color: #f3e2c2;
+    }
+    .disclaimer p { margin: 0; }
+
+    .atlas {
+      margin-top: 1.4rem;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(154, 216, 255, 0.08), transparent 42%),
+        var(--panel);
+      border: 1px solid var(--line);
+      min-height: 22rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .atlas svg { display: block; width: 100%; height: auto; }
+    .atlas-caption {
+      padding: 0 1rem 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .countries {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 1.1rem;
+    }
+    .country {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      min-height: 44px;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--line);
+      background: rgba(13, 29, 43, 0.55);
+    }
+    .country b { font-weight: 600; }
+    .tag {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .tag.active { color: var(--green); }
+
+    .next {
+      list-style: none;
+      padding: 0;
+      margin: 1.2rem 0 0;
+      counter-reset: step;
+    }
+    .next li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 2.4rem 1fr;
+      gap: 0.7rem;
+      padding: 0.85rem 0;
+      border-top: 1px solid var(--line);
+      min-height: 44px;
+    }
+    .next li::before {
+      content: counter(step, decimal-leading-zero);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      color: var(--ice);
+      font-size: 0.85rem;
+      padding-top: 0.15rem;
+    }
+
+    footer {
+      margin-top: 4.5rem;
+      padding: 2rem 0 2.6rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    footer p { color: var(--muted); }
+
+    @media (min-width: 720px) {
+      :root { --max: 58rem; }
+      .split { grid-template-columns: 1fr 1fr; }
+      .countries { grid-template-columns: 1fr 1fr; }
+      .hero { justify-content: center; padding-top: 4rem; }
+      .status-row { flex-direction: row; flex-wrap: wrap; align-items: center; }
+      .chip { width: auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .pulse, .pulse-2, .scroll-hint span { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#story">Skip to the project story</a>
+
+  <header class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="pulse" aria-hidden="true"></div>
+    <div class="pulse-2" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker">Early project prototype</p>
+      <h1>The<br>Power Gap</h1>
+      <p class="lede">Where data-centre ambition meets the electricity grid.</p>
+      <p class="muted">Can electricity systems deliver power where and when planned data centres expect to need it?</p>
+      <div class="status-row">
+        <span class="chip live">Finland pilot underway</span>
+        <span class="chip proto">Not a completed forecast</span>
+      </div>
+      <a class="scroll-hint" href="#story"><span aria-hidden="true"></span>Scroll the project story</a>
+    </div>
+  </header>
+
+  <main id="story">
+    <section aria-labelledby="missing-heading">
+      <div class="wrap">
+        <div class="rule"></div>
+        <p class="kicker">The missing link</p>
+        <h2 id="missing-heading">National power is not local power</h2>
+        <p>A country can look well supplied and still fail a data-centre timetable. The project exists to separate those two pictures.</p>
+        <div class="split">
+          <article class="panel not">
+            <div class="label">Not enough</div>
+            <h3>A national surplus</h3>
+            <p class="muted">Annual electricity left over at country scale is not proof that a local data centre can connect.</p>
+          </article>
+          <article class="panel yes">
+            <div class="label">What matters</div>
+            <h3>Deliverable electricity</h3>
+            <p class="muted">Power has to be available in the right place, in the required hours, and by the promised date.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="method-heading">
+      <div class="wrap">
+        <div class="rule"></div>
+        <p class="kicker">How the research works</p>
+        <h2 id="method-heading">Four inspectable layers</h2>
+        <p class="muted">Facts, calculations, scenarios, assessments and unknowns stay separate. If a generated view disagrees with the records, the view is wrong.</p>
+        <div class="spine">
+          <article class="layer">
+            <div class="idx">01 / Evidence</div>
+            <h3>Primary sources first</h3>
+            <p class="muted">Authorities, operators, regulators, permits and company disclosures, kept with provenance.</p>
+          </article>
+          <article class="layer">
+            <div class="idx">02 / Canonical records</div>
+            <h3>One fact, one record</h3>
+            <p class="muted">Human-readable, version-controlled facts with stable identities and explicit unknowns.</p>
+          </article>
+          <article class="layer">
+            <div class="idx">03 / Analysis</div>
+            <h3>Rebuildable calculations</h3>
+            <p class="muted">Reproducible work from those records and named scenarios — not copied figures.</p>
+          </article>
+          <article class="layer">
+            <div class="idx">04 / Publication</div>
+            <h3>Generated views only</h3>
+            <p class="muted">Maps, profiles and public pages are outputs. They never own the underlying facts.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="finland-heading">
+      <div class="wrap">
+        <div class="rule"></div>
+        <p class="kicker">Finland first</p>
+        <h2 id="finland-heading">A bounded pilot, not a ranking</h2>
+        <p>Finland is the first laboratory: national adequacy tested against local deliverability in Uusimaa and southern Finland.</p>
+        <p class="muted">A primary-source access audit is underway. A later visual slice will use five verified Finnish plants and one relevant corridor on a static Finland map. That slice is planned separately and is not shown here.</p>
+        <p>No Power Gap figure exists yet. This page does not estimate one.</p>
+        <aside class="disclaimer">
+          <p>Early project prototype. Research and source validation are in progress. No country conclusion, capacity forecast, plant ranking or investment implication is presented here.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-labelledby="atlas-heading">
+      <div class="wrap">
+        <div class="rule"></div>
+        <p class="kicker">Atlas vision</p>
+        <h2 id="atlas-heading">A map that fills only with verified records</h2>
+        <p class="muted">The eventual Atlas is conceptual here: major generating sites, strategic AC and HVDC corridors, country profiles and later data-centre demand overlays. No geographic pins are shown, because those records are not yet verified for publication.</p>
+        <div class="atlas" role="img" aria-label="Conceptual diagram of four founding countries as abstract nodes. Finland is active; Norway, the United States and China are queued. This is not a geographic map.">
+          <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="arc" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#9ad8ff" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#9ad8ff" stop-opacity="0.55"/>
+              </linearGradient>
+            </defs>
+            <path d="M140 230 C 230 70, 410 70, 500 230" fill="none" stroke="url(#arc)" stroke-width="1.4"/>
+            <path d="M180 250 C 280 300, 360 300, 460 250" fill="none" stroke="rgba(154,216,255,0.22)" stroke-width="1"/>
+            <circle cx="160" cy="236" r="7" fill="#86d4a6"/>
+            <circle cx="480" cy="236" r="5" fill="#6d8296"/>
+            <circle cx="250" cy="118" r="5" fill="#6d8296"/>
+            <circle cx="390" cy="118" r="5" fill="#6d8296"/>
+            <text x="160" y="268" text-anchor="middle" fill="#d7eefc" font-size="13" font-family="IBM Plex Sans, sans-serif">Finland</text>
+            <text x="480" y="268" text-anchor="middle" fill="#93a8ba" font-size="13" font-family="IBM Plex Sans, sans-serif">Norway</text>
+            <text x="250" y="100" text-anchor="middle" fill="#93a8ba" font-size="13" font-family="IBM Plex Sans, sans-serif">United States</text>
+            <text x="390" y="100" text-anchor="middle" fill="#93a8ba" font-size="13" font-family="IBM Plex Sans, sans-serif">China</text>
+          </svg>
+          <p class="atlas-caption">Conceptual nodes and arcs only. Verified records will gradually occupy this space. This is not evidence geography.</p>
+        </div>
+        <div class="countries">
+          <div class="country"><b>Finland</b><span class="tag active">Active pilot</span></div>
+          <div class="country"><b>Norway</b><span class="tag">Queued</span></div>
+          <div class="country"><b>United States</b><span class="tag">Queued</span></div>
+          <div class="country"><b>China</b><span class="tag">Queued</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="next-heading">
+      <div class="wrap">
+        <div class="rule"></div>
+        <p class="kicker">What happens next</p>
+        <h2 id="next-heading">Method before spectacle</h2>
+        <ol class="next">
+          <li>Finish the primary-source access audit.</li>
+          <li>Lock the remaining human methodology decisions.</li>
+          <li>Author golden records and a validator.</li>
+          <li>Generate the static Finland map from those records.</li>
+          <li>Pass a clean restore test.</li>
+          <li>Only then expand to later countries.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Early project prototype. Research and source validation are in progress. No country conclusion, capacity forecast, plant ranking or investment implication is presented here.</p>
+      <p>Public showcase generated 24 August 2026. Founding comparison: China, United States, Norway and Finland.</p>
+    </div>
+  </footer>
+</body>
+</html>
