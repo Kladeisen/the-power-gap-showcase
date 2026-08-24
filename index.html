@@ -360,12 +360,14 @@
       .hero { justify-content: center; padding-top: 4rem; }
       .status-row { flex-direction: row; flex-wrap: wrap; align-items: center; }
       .chip { width: auto; }
+      .lede br, .hero .muted br { display: none; }
     }
 
     @media (max-width: 430px) {
-      body { font-size: 1rem; }
-      .lede { font-size: 1.08rem; }
-      h1 { font-size: 2.35rem; }
+      body { font-size: 0.98rem; }
+      .lede { font-size: 1.02rem; }
+      h1 { font-size: 2.25rem; }
+      .wrap { width: calc(100% - 2.4rem); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -384,8 +386,8 @@
     <div class="wrap">
       <p class="kicker">Early project prototype</p>
       <h1>The<br>Power Gap</h1>
-      <p class="lede">Where data-centre ambition meets the electricity grid.</p>
-      <p class="muted">Can electricity systems deliver power where and when planned data centres expect to need it?</p>
+      <p class="lede">Where data-centre ambition meets<br>the electricity grid.</p>
+      <p class="muted">Can electricity systems deliver power<br>where and when planned data centres expect to need it?</p>
       <div class="status-row">
         <span class="chip live">Finland pilot underway</span>
         <span class="chip proto">Not a completed forecast</span>
